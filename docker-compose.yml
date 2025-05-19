@@ -98,12 +98,6 @@ services:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: 10.10.4.133:29092
       SPRING_KAFKA_CONSUMER_GROUP_ID: booking-group
       SPRING_KAFKA_PROPERTIES_SCHEMA_REGISTRY_URL: http://10.10.4.133:8081
-#    networks:
-#      - host
 
 volumes:
   pgdata:
-
-#networks:
-#   host:
-#     external: true
