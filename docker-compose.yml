@@ -70,39 +70,39 @@
 #volumes:
 #  postgres_data:
 
-version: '3.8'
-
-services:
-  postgres:
-    image: postgres:14
-    restart: always
-    environment:
-      POSTGRES_DB: vehicle_reservation
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-    ports:
-      - "5432:5432"
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-
-  consumer:
-    build: .
-    depends_on:
-      - postgres
-    ports:
-      - "8081:8081"
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/vehicle_reservation
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 1234
-      SPRING_KAFKA_BOOTSTRAP_SERVERS: 10.10.4.133:29092
-      SPRING_KAFKA_CONSUMER_GROUP_ID: booking-group
-      SPRING_KAFKA_PROPERTIES_SCHEMA_REGISTRY_URL: http://10.10.4.133:8081
-#    networks:
-#      - host
-
-volumes:
-  pgdata:
+#version: '3.8'
+#
+#services:
+#  postgres:
+#    image: postgres:14
+#    restart: always
+#    environment:
+#      POSTGRES_DB: vehicle_reservation
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: 1234
+#    ports:
+#      - "5432:5432"
+#    volumes:
+#      - pgdata:/var/lib/postgresql/data
+#
+#  consumer:
+#    build: .
+#    depends_on:
+#      - postgres
+#    ports:
+#      - "8081:8081"
+#    environment:
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/vehicle_reservation
+#      SPRING_DATASOURCE_USERNAME: postgres
+#      SPRING_DATASOURCE_PASSWORD: 1234
+#      SPRING_KAFKA_BOOTSTRAP_SERVERS: 10.10.4.133:29092
+#      SPRING_KAFKA_CONSUMER_GROUP_ID: booking-group
+#      SPRING_KAFKA_PROPERTIES_SCHEMA_REGISTRY_URL: http://10.10.4.133:8081
+##    networks:
+##      - host
+#
+#volumes:
+#  pgdata:
 
 #networks:
 #   host:
