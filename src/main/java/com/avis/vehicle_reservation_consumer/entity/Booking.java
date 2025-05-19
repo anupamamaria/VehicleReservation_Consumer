@@ -25,13 +25,13 @@ public class Booking {
     @Column(name = "event-type")
     String eventType;
     @Column(name = "user_id")
-    private UUID userId;
+    private int userId;
     @Column(name = "car_id")
-    private UUID carId;
+    private int carId;
     @Column(name = "source_location_id")
-    private UUID sourceLocationId;
+    private int sourceLocationId;
     @Column(name = "destination_location_id")
-    private UUID destinationLocationId;
+    private int destinationLocationId;
     @Column(name = "start_date")
     private LocalDate startDate;
     @Column(name = "end_date")
@@ -69,35 +69,35 @@ public class Booking {
         this.timestamp = timestamp;
     }
 
-    public UUID getUserId() {
+    public int getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(int userId) {
         this.userId = userId;
     }
 
-    public UUID getCarId() {
+    public int getCarId() {
         return carId;
     }
 
-    public void setCarId(UUID carId) {
+    public void setCarId(int carId) {
         this.carId = carId;
     }
 
-    public UUID getSourceLocationId() {
+    public int getSourceLocationId() {
         return sourceLocationId;
     }
 
-    public void setSourceLocationId(UUID sourceLocationId) {
+    public void setSourceLocationId(int sourceLocationId) {
         this.sourceLocationId = sourceLocationId;
     }
 
-    public UUID getDestinationLocationId() {
+    public int getDestinationLocationId() {
         return destinationLocationId;
     }
 
-    public void setDestinationLocationId(UUID destinationLocationId) {
+    public void setDestinationLocationId(int destinationLocationId) {
         this.destinationLocationId = destinationLocationId;
     }
 

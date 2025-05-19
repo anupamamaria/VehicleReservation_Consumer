@@ -16,42 +16,42 @@ import java.util.UUID;
 public class BookingDTO {
 
     // Decrypted fields from BookingRequestDto
-    private UUID userId;
-    private UUID carId;
-    private UUID sourceLocationId;
-    private UUID destinationLocationId;
+    private Integer userId;
+    private Integer carId;
+    private Integer sourceLocationId;
+    private Integer destinationLocationId;
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public UUID getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(UUID userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
-    public UUID getCarId() {
+    public Integer getCarId() {
         return carId;
     }
 
-    public void setCarId(UUID carId) {
+    public void setCarId(Integer carId) {
         this.carId = carId;
     }
 
-    public UUID getSourceLocationId() {
+    public Integer getSourceLocationId() {
         return sourceLocationId;
     }
 
-    public void setSourceLocationId(UUID sourceLocationId) {
+    public void setSourceLocationId(Integer sourceLocationId) {
         this.sourceLocationId = sourceLocationId;
     }
 
-    public UUID getDestinationLocationId() {
+    public Integer getDestinationLocationId() {
         return destinationLocationId;
     }
 
-    public void setDestinationLocationId(UUID destinationLocationId) {
+    public void setDestinationLocationId(Integer destinationLocationId) {
         this.destinationLocationId = destinationLocationId;
     }
 
