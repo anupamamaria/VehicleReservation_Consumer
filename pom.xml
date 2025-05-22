@@ -60,9 +60,15 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-database-postgresql</artifactId>
+			<version>10.20.1</version>
+		</dependency>
+		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-			<scope>runtime</scope>
+			<version>42.6.0</version>
+<!--			<scope>runtime</scope>-->
 		</dependency>
 		<dependency>
 			<groupId>org.apache.avro</groupId>
@@ -94,6 +100,14 @@
 			<artifactId>spring-kafka-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<version>10.20.1</version>
+		</dependency>
+
+
+
 	</dependencies>
 
 	<build>
@@ -128,6 +142,26 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.flywaydb</groupId>
+				<artifactId>flyway-maven-plugin</artifactId>
+				<version>10.20.1</version>
+				<configuration>
+					<driver>org.postgresql.Driver</driver>
+					<url>jdbc:postgresql://dpg-d0lcrrffte5s739d1isg-a.oregon-postgres.render.com:5432/vehicle_reservation</url>
+					<user>vehicle_reservation_user</user>
+					<password>8BYDeUqQim0p85umcebzjSzevMMmzhzG</password>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.postgresql</groupId>
+						<artifactId>postgresql</artifactId>
+						<version>42.6.0</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

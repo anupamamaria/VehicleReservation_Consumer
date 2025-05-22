@@ -9,7 +9,22 @@ import lombok.Setter;
 import java.time.LocalDate;
 import java.util.UUID;
 
-
+//@NamedStoredProcedureQuery(
+//        name = "Booking.saveOrUpdateBooking",
+//        procedureName = "save_or_update_booking",
+//        parameters = {
+//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_booking_id", type = UUID.class),
+//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_timestamp", type = String.class),
+//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_event_type", type = String.class),
+//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_user_id", type = Integer.class),
+//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_car_id", type = Integer.class),
+//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_source_location_id", type = Integer.class),
+//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_destination_location_id", type = Integer.class),
+//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_start_date", type = LocalDate.class),
+//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_end_date", type = LocalDate.class),
+//                @StoredProcedureParameter(mode = ParameterMode.OUT, name = "out", type = Boolean.class)
+//        }
+//)
 @Entity
 public class Booking {
     @Id
@@ -22,8 +37,8 @@ public class Booking {
     @Column(name = "timestamp")
     String timestamp;
 
-    @Column(name = "event-type")
-    String eventType;
+//    @Column(name = "event_type")
+//    String eventType;
     @Column(name = "user_id")
     private int userId;
     @Column(name = "car_id")
@@ -38,13 +53,13 @@ public class Booking {
     private LocalDate endDate;
 
 
-    public String getEventType() {
-        return eventType;
-    }
-
-    public void setEventType(String eventType) {
-        this.eventType = eventType;
-    }
+//    public String getEventType() {
+//        return eventType;
+//    }
+//
+//    public void setEventType(String eventType) {
+//        this.eventType = eventType;
+//    }
     public int getId() {
         return id;
     }
