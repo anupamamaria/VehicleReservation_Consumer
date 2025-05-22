@@ -1,5 +1,6 @@
 package com.avis.vehicle_reservation_consumer.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.*;
@@ -13,6 +14,8 @@ public class MailServiceImpl implements MailService{
         this.sesClient = sesClient;
     }
 
+    @Value("${aws.ses.from.email}")
+    private String fromEmail;
 
     @Override
     public void sendMail(String toEmail, String userName, String status){
@@ -58,10 +61,8 @@ public class MailServiceImpl implements MailService{
                     .body(body)
                     .build();
 
-            String senderEmail = "your-verified-sender@example.com"; // Replace this
-
             SendEmailRequest emailRequest = SendEmailRequest.builder()
-                    .source(senderEmail)
+                    .source(fromEmail)
                     .destination(Destination.builder().toAddresses(toEmail).build())
                     .message(message)
                     .build();
