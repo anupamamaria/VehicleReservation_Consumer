@@ -28,7 +28,7 @@ public class BookingKafkaConsumer {
     public void consume(Booking message ) {
         try {
             UUID bookingId = UUID.fromString(message.getBookingId().toString());
-            String eventType = message.getEventType().toString();
+           String eventType = message.getEventType().toString();
             String timestamp = message.getTimestamp().toString();
             String encryptedPayload = message.getEncryptedPayload().toString();
 
@@ -46,19 +46,22 @@ public class BookingKafkaConsumer {
                 return;
             }
 
+            BookingDTO bookingDTO = objectMapper.readValue(decryptedJson, BookingDTO.class);
+            bookingService.processBookingEvent(bookingId,timestamp,bookingDTO);
+
             // Deserialize and save/update booking
-            try {
-                if(!eventType.toLowerCase().equals("updated")){
-                    BookingDTO bookingDTO = objectMapper.readValue(decryptedJson, BookingDTO.class);
-                    bookingService.saveBooking(bookingId, timestamp, bookingDTO, eventType);
-                }
-                else{
-                    BookingDTO bookingDTO = objectMapper.readValue(decryptedJson, BookingDTO.class);
-                    bookingService.updateBooking(bookingId, timestamp, bookingDTO, eventType);
-                }
-            }catch (Exception e){
-                log.error("Failed to parse or persist booking: {}",e.getMessage(),e);
-            }
+//            try {
+//                if(!eventType.toLowerCase().equals("updated")){
+//                    BookingDTO bookingDTO = objectMapper.readValue(decryptedJson, BookingDTO.class);
+//                    bookingService.saveBooking(bookingId, timestamp, bookingDTO, eventType);
+//                }
+//                else{
+//                    BookingDTO bookingDTO = objectMapper.readValue(decryptedJson, BookingDTO.class);
+//                    bookingService.updateBooking(bookingId, timestamp, bookingDTO, eventType);
+//                }
+//            }catch (Exception e){
+//                log.error("Failed to parse or persist booking: {}",e.getMessage(),e);
+//            }
 
         } catch (Exception e) {
             log.error("Unexpected error while consuming booking event: {}", e.getMessage(), e);
