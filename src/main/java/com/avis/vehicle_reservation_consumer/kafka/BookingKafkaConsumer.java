@@ -32,6 +32,7 @@ public class BookingKafkaConsumer {
             String timestamp = message.getTimestamp().toString();
             String encryptedPayload = message.getEncryptedPayload().toString();
 
+            System.out.println("now in consumer...bookining id is "+bookingId);
             log.info("Received booking event:");
             log.info("Booking ID: {}",bookingId);
             log.info("Timestamp: {}",timestamp);

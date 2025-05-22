@@ -1,13 +1,16 @@
 package com.avis.vehicle_reservation_consumer.service;
 import com.avis.vehicle_reservation_consumer.dto.BookingDTO;
 import com.avis.vehicle_reservation_consumer.entity.Booking;
+import com.avis.vehicle_reservation_consumer.model.User;
 import com.avis.vehicle_reservation_consumer.repository.BookingRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.sql.Date;
 import java.util.List;
@@ -18,10 +21,14 @@ import java.util.UUID;
 public class BookingServiceImpl implements BookingService{
 
     private final BookingRepository bookingRepository;
+    private final MailService mailService;
+    private final RestTemplate restTemplate;
     private static final Logger logger = LoggerFactory.getLogger(BookingServiceImpl.class);
 
-    public BookingServiceImpl(BookingRepository bookingRepository){
+    public BookingServiceImpl(BookingRepository bookingRepository,MailService mailService, RestTemplate restTemplate){
         this.bookingRepository = bookingRepository;
+        this.mailService = mailService;
+        this.restTemplate = restTemplate;
     }
 
 //    @Override
@@ -99,6 +106,14 @@ public class BookingServiceImpl implements BookingService{
     @Override
     public void processBookingEvent(UUID bookingId, String timestamp, BookingDTO bookingDTO) {
         validateBooking(bookingId,bookingDTO);
+        String status = "";
+        if(bookingRepository.findByBookingId(bookingId).isPresent()){
+            status = "updated";
+        }
+        else{
+            status = "created";
+        }
+
     try {
         // Use named parameters for better readability and safety
         Query query = entityManager.createNativeQuery(
@@ -119,11 +134,23 @@ public class BookingServiceImpl implements BookingService{
         Boolean criticalFieldChanged = (Boolean) query.getSingleResult();
         System.out.println("Function returned: " + criticalFieldChanged);
 
-        // If locations changed, you might want to handle that here
+        int userId = bookingDTO.getUserId();
+        String url = "https://vehiclereservationproducer.onrender.com/users/"+userId;
+        ResponseEntity<User> response  = restTemplate.getForEntity(url, User.class);
+        User user = response.getBody();
+        String userName = user.getName();
+        String userEmail = user.getEmail();
+        // If critical fields changed, you might want to handle that here
         if (criticalFieldChanged) {
             System.out.println("Critical Fields changed: " + bookingId);
-            // Add any special handling for location changes
+            mailService.sendMail(userEmail, userName, "updated");
+            System.out.println("Sent update mail to " + userEmail);
         }
+        if(status.toLowerCase().equals("created")){
+            mailService.sendMail(userEmail, userName, "created");
+            System.out.println("Sent create mail to " + userEmail);
+        }
+
     } catch (Exception e) {
         System.err.println("Error calling save_or_update_booking function: " + e.getMessage());
         e.printStackTrace();
