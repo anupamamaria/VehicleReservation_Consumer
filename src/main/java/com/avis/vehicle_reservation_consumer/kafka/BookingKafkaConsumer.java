@@ -30,26 +30,29 @@ public class BookingKafkaConsumer {
             UUID bookingId = UUID.fromString(message.getBookingId().toString());
             String eventType = message.getEventType().toString();
             String timestamp = message.getTimestamp().toString();
-            String encryptedPayload = message.getEncryptedPayload().toString();
-
             log.info("Received booking event:");
             log.info("Booking ID: {}",bookingId);
             log.info("Timestamp: {}",timestamp);
 
-            // Decrypt payload
-            String decryptedJson = "";
-            try{
-                decryptedJson = EncryptionUtil.decrypt(encryptedPayload);
-                log.info("Decrypted JSON: {}", decryptedJson);
-            } catch(Exception e){
-                log.error("Failed to decrypt payload: {}",e.getMessage(),e);
-                return;
+            if(eventType.toLowerCase().equals("deleted")){
+                bookingService.deleteBookingById(bookingId);
             }
 
-            BookingDTO bookingDTO = objectMapper.readValue(decryptedJson, BookingDTO.class);
-            bookingService.processBookingEvent(bookingId,timestamp,bookingDTO);
+            else{
+                String encryptedPayload = message.getEncryptedPayload().toString();
+                // Decrypt payload
+                String decryptedJson = "";
+                try{
+                    decryptedJson = EncryptionUtil.decrypt(encryptedPayload);
+                    log.info("Decrypted JSON: {}", decryptedJson);
+                } catch(Exception e){
+                    log.error("Failed to decrypt payload: {}",e.getMessage(),e);
+                    return;
+                }
 
-            // Deserialize and save/update booking
+                BookingDTO bookingDTO = objectMapper.readValue(decryptedJson, BookingDTO.class);
+                bookingService.processBookingEvent(bookingId,timestamp,bookingDTO);
+                // Deserialize and save/update booking
 //            try {
 //                if(!eventType.toLowerCase().equals("updated")){
 //                    BookingDTO bookingDTO = objectMapper.readValue(decryptedJson, BookingDTO.class);
@@ -63,11 +66,11 @@ public class BookingKafkaConsumer {
 //                log.error("Failed to parse or persist booking: {}",e.getMessage(),e);
 //            }
 
+            }
         } catch (Exception e) {
             log.error("Unexpected error while consuming booking event: {}", e.getMessage(), e);
         }
     }
-
     @PostConstruct
     public void init(){
         System.out.println("Booking consumer is ready");

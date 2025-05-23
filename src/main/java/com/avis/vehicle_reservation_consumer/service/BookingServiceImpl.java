@@ -101,6 +101,19 @@ public class BookingServiceImpl implements BookingService{
         return bookingRepository.findByDestinationLocationId(destinationLocationId);
     }
 
+    @Override
+    public void deleteBookingById(UUID bookingId){
+        Optional<Booking> optionalBooking = bookingRepository.findByBookingId(bookingId);
+        if(optionalBooking.isPresent()){
+            Booking booking = optionalBooking.get();
+            bookingRepository.delete(booking);
+            logger.info("Deleted booking with booking id: {}",bookingId);
+        }
+       else{
+           logger.error("Booking with booking id: {} is not found",bookingId);
+        }
+    }
+
     @PersistenceContext
     private EntityManager entityManager;
     @Override
