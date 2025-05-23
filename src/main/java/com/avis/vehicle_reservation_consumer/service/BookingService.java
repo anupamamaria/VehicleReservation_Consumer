@@ -12,6 +12,7 @@ public interface BookingService {
      List<Booking> getAllBookings();
      List<Booking> findBookingsBySourceLocation(int sourceLocationId);
      List<Booking> findBookingsByDestinationLocation(int destinationLocationId);
+     void deleteBookingById(UUID bookingId);
 //     void processBookingEvent(UUID bookingId, String timestamp, String eventType, BookingDTO dto);
 void processBookingEvent(UUID bookingId, String timestamp, BookingDTO bookingDTO);
 }
