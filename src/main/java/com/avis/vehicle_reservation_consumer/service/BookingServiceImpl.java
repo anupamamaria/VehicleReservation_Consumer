@@ -132,7 +132,7 @@ public class BookingServiceImpl implements BookingService{
         query.setParameter("endDate", Date.valueOf(bookingDTO.getEndDate()));
 
         Boolean criticalFieldChanged = (Boolean) query.getSingleResult();
-        System.out.println("Function returned: " + criticalFieldChanged);
+        logger.info("Critical Field Changed : {} ",criticalFieldChanged);
 
         int userId = bookingDTO.getUserId();
         String url = "https://vehiclereservationproducer.onrender.com/users/"+userId;
@@ -140,15 +140,13 @@ public class BookingServiceImpl implements BookingService{
         User user = response.getBody();
         String userName = user.getName();
         String userEmail = user.getEmail();
-        // If critical fields changed, you might want to handle that here
+        // If critical fields changed, send update mail to user
         if (criticalFieldChanged) {
             System.out.println("Critical Fields changed: " + bookingId);
             mailService.sendMail(userEmail, userName, "updated");
-            System.out.println("Sent update mail to " + userEmail);
         }
         if(status.toLowerCase().equals("created")){
             mailService.sendMail(userEmail, userName, "created");
-            System.out.println("Sent create mail to " + userEmail);
         }
 
     } catch (Exception e) {
