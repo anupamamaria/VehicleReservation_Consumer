@@ -8,6 +8,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -87,6 +89,7 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
+    @Cacheable("allBookings")
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
@@ -102,7 +105,9 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
+    @CacheEvict(value = "allBookings", allEntries = true)
     public void deleteBookingById(UUID bookingId){
+        logger.info("Evicting cache: allBookings");
         Optional<Booking> optionalBooking = bookingRepository.findByBookingId(bookingId);
         if(optionalBooking.isPresent()){
             Booking booking = optionalBooking.get();
@@ -117,7 +122,9 @@ public class BookingServiceImpl implements BookingService{
     @PersistenceContext
     private EntityManager entityManager;
     @Override
+    @CacheEvict(value = "allBookings", allEntries = true)
     public void processBookingEvent(UUID bookingId, String timestamp, BookingDTO bookingDTO) {
+        logger.info("Evicting cache: allBookings");
         validateBooking(bookingId,bookingDTO);
         String status = "";
         if(bookingRepository.findByBookingId(bookingId).isPresent()){
@@ -136,7 +143,7 @@ public class BookingServiceImpl implements BookingService{
 
         query.setParameter("bookingId", bookingId);
         query.setParameter("timestamp", timestamp);
-//        query.setParameter("eventType", eventType);
+//      query.setParameter("eventType", eventType);
         query.setParameter("userId", bookingDTO.getUserId());
         query.setParameter("carId", bookingDTO.getCarId());
         query.setParameter("sourceLocationId", bookingDTO.getSourceLocationId());
