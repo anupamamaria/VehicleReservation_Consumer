@@ -10,22 +10,6 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.UUID;
 
-//@NamedStoredProcedureQuery(
-//        name = "Booking.saveOrUpdateBooking",
-//        procedureName = "save_or_update_booking",
-//        parameters = {
-//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_booking_id", type = UUID.class),
-//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_timestamp", type = String.class),
-//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_event_type", type = String.class),
-//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_user_id", type = Integer.class),
-//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_car_id", type = Integer.class),
-//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_source_location_id", type = Integer.class),
-//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_destination_location_id", type = Integer.class),
-//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_start_date", type = LocalDate.class),
-//                @StoredProcedureParameter(mode = ParameterMode.IN, name = "p_end_date", type = LocalDate.class),
-//                @StoredProcedureParameter(mode = ParameterMode.OUT, name = "out", type = Boolean.class)
-//        }
-//)
 @Entity
 public class Booking implements Serializable {
     private static final long serialVersionUID = 1L;
