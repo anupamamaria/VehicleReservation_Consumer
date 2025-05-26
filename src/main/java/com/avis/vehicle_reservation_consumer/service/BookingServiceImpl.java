@@ -17,9 +17,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.sql.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class BookingServiceImpl implements BookingService{
@@ -56,9 +62,29 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-    @Cacheable("allBookings")
+//    @Cacheable("allBookings")
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
+
+    }
+
+    @Override
+    @Cacheable("recentBookings")
+    public List<Booking> getRecentBookings() {
+        List<Booking> allBookings = bookingRepository.findAll();
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
+        return allBookings.stream()
+                .filter(booking -> {
+                    try {
+                        Instant instant = Instant.parse(booking.getTimestamp());
+                        LocalDateTime bookingTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+                        return bookingTime.isAfter(oneWeekAgo);
+                    } catch (Exception e) {
+                        // log error if needed
+                        return false;
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -72,9 +98,9 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-    @CacheEvict(value = "allBookings", allEntries = true)
+//    @CacheEvict(value = "allBookings", allEntries = true)
     public void deleteBookingById(UUID bookingId){
-        logger.info("Evicting cache: allBookings");
+//        logger.info("Evicting cache: allBookings");
         Optional<Booking> optionalBooking = bookingRepository.findByBookingId(bookingId);
         if(optionalBooking.isPresent()){
             Booking booking = optionalBooking.get();
@@ -90,9 +116,9 @@ public class BookingServiceImpl implements BookingService{
     @PersistenceContext
     private EntityManager entityManager;
     @Override
-    @CacheEvict(value = "allBookings", allEntries = true)
+//    @CacheEvict(value = "allBookings", allEntries = true)
     public void processBookingEvent(UUID bookingId, String timestamp, BookingDTO bookingDTO) {
-        logger.info("Evicting cache: allBookings");
+//        logger.info("Evicting cache: allBookings");
         validateBooking(bookingId,bookingDTO);
         String status = "";
         if(bookingRepository.findByBookingId(bookingId).isPresent()){
