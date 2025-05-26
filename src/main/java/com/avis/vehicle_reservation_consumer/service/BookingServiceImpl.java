@@ -34,14 +34,12 @@ public class BookingServiceImpl implements BookingService{
     private final MailService mailService;
     private final RestTemplate restTemplate;
     private static final Logger logger = LoggerFactory.getLogger(BookingServiceImpl.class);
-    private final BookingService bookingService;
 
     public BookingServiceImpl(BookingRepository bookingRepository,MailService mailService,
-                              RestTemplate restTemplate, @Lazy BookingService bookingService){
+                              RestTemplate restTemplate){
         this.bookingRepository = bookingRepository;
         this.mailService = mailService;
         this.restTemplate = restTemplate;
-        this.bookingService = bookingService;
     }
 
     public void validateBooking(UUID bookingId, BookingDTO bookingDTO) {
@@ -61,31 +59,32 @@ public class BookingServiceImpl implements BookingService{
         }
     }
 
+//    @Override
+//    @Cacheable("allBookings")
+//    public List<Booking> getAllBookings() {
+//        return bookingRepository.findAll();
+//
+//    }
+
     @Override
     @Cacheable("allBookings")
-    public List<Booking> getAllBookings() {
-        return bookingRepository.findAll();
-
+    public List<Booking> getRecentBookings() {
+        List<Booking> allBookings = bookingRepository.findAll();
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
+        return allBookings.stream()
+                .filter(booking -> {
+                    try {
+                        Instant instant = Instant.parse(booking.getTimestamp());
+                        LocalDateTime bookingTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+                        logger.info("booking time: {}",bookingTime);
+                        return bookingTime.isAfter(oneWeekAgo);
+                    } catch (Exception e) {
+                        // log error if needed
+                        return false;
+                    }
+                })
+                .collect(Collectors.toList());
     }
-
-//    @Override
-//    @Cacheable("recentBookings")
-//    public List<Booking> getRecentBookings() {
-//        List<Booking> allBookings = bookingRepository.findAll();
-//        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
-//        return allBookings.stream()
-//                .filter(booking -> {
-//                    try {
-//                        Instant instant = Instant.parse(booking.getTimestamp());
-//                        LocalDateTime bookingTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-//                        return bookingTime.isAfter(oneWeekAgo);
-//                    } catch (Exception e) {
-//                        // log error if needed
-//                        return false;
-//                    }
-//                })
-//                .collect(Collectors.toList());
-//    }
 
     @Override
     public List<Booking> findBookingsBySourceLocation(int sourceLocationId){
@@ -106,7 +105,6 @@ public class BookingServiceImpl implements BookingService{
             Booking booking = optionalBooking.get();
             bookingRepository.delete(booking);
             logger.info("Deleted booking with booking id: {}",bookingId);
-            bookingService.getAllBookings();
         }
        else{
            logger.error("Booking with booking id: {} is not found",bookingId);
@@ -161,7 +159,6 @@ public class BookingServiceImpl implements BookingService{
         if(status.toLowerCase().equals("created")){
             mailService.sendMail(userEmail, userName, "created");
         }
-        bookingService.getAllBookings();
 
     } catch (Exception e) {
         System.err.println("Error calling save_or_update_booking function: " + e.getMessage());
