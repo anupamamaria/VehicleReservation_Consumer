@@ -8,8 +8,10 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -26,55 +28,20 @@ public class BookingServiceImpl implements BookingService{
     private final MailService mailService;
     private final RestTemplate restTemplate;
     private static final Logger logger = LoggerFactory.getLogger(BookingServiceImpl.class);
+    private final BookingService bookingService;
 
-    public BookingServiceImpl(BookingRepository bookingRepository,MailService mailService, RestTemplate restTemplate){
+    public BookingServiceImpl(BookingRepository bookingRepository,MailService mailService,
+                              RestTemplate restTemplate, @Lazy BookingService bookingService){
         this.bookingRepository = bookingRepository;
         this.mailService = mailService;
         this.restTemplate = restTemplate;
+        this.bookingService = bookingService;
     }
-
-//    @Override
-//    public void saveBooking(UUID bookingId, String timestamp, BookingDTO bookingDTO){
-//        validateBooking(bookingId, bookingDTO);
-//        Booking booking = new Booking();
-//        booking.setBookingId(bookingId);
-//        assignBookingFields(booking, timestamp, bookingDTO);
-//        logger.info("Saving the booking in database");
-//        bookingRepository.save(booking);
-//    }
-//
-//    @Override
-//    public void updateBooking(UUID bookingId, String timestamp, BookingDTO bookingDTO, String eventType){
-//        validateBooking(bookingId, bookingDTO);
-//        Optional<Booking> optionalBooking = bookingRepository.findByBookingId(bookingId);
-//        if(optionalBooking.isPresent()){
-//            Booking booking = optionalBooking.get();
-//            assignBookingFields(booking, timestamp, bookingDTO);
-//            logger.info("Updating the booking in database");
-//            bookingRepository.save(booking);
-//        }
-//        else{
-//            logger.error("Booking with Id: "+bookingId+" is not found for updating");
-//        }
-//    }
-//
-//    public void assignBookingFields(Booking booking, String timestamp, BookingDTO bookingDTO){
-//        booking.setTimestamp(timestamp);
-//        booking.setUserId(bookingDTO.getUserId());
-//        booking.setCarId(bookingDTO.getCarId());
-//        booking.setStartDate(bookingDTO.getStartDate());
-//        booking.setEndDate(bookingDTO.getEndDate());
-//        booking.setSourceLocationId(bookingDTO.getSourceLocationId());
-//        booking.setDestinationLocationId(bookingDTO.getDestinationLocationId());
-//    }
 
     public void validateBooking(UUID bookingId, BookingDTO bookingDTO) {
         if (bookingId == null) {
             throw new IllegalArgumentException("Booking Id must not be null");
         }
-//        if (eventType == null || eventType.trim().isEmpty()) {
-//            throw new IllegalArgumentException("Event Type must not be null or empty");
-//        }
         if (bookingDTO == null) {
             throw new IllegalArgumentException("Booking data must not be null");
         }
@@ -113,6 +80,7 @@ public class BookingServiceImpl implements BookingService{
             Booking booking = optionalBooking.get();
             bookingRepository.delete(booking);
             logger.info("Deleted booking with booking id: {}",bookingId);
+            bookingService.getAllBookings();
         }
        else{
            logger.error("Booking with booking id: {} is not found",bookingId);
@@ -143,7 +111,6 @@ public class BookingServiceImpl implements BookingService{
 
         query.setParameter("bookingId", bookingId);
         query.setParameter("timestamp", timestamp);
-//      query.setParameter("eventType", eventType);
         query.setParameter("userId", bookingDTO.getUserId());
         query.setParameter("carId", bookingDTO.getCarId());
         query.setParameter("sourceLocationId", bookingDTO.getSourceLocationId());
@@ -168,6 +135,7 @@ public class BookingServiceImpl implements BookingService{
         if(status.toLowerCase().equals("created")){
             mailService.sendMail(userEmail, userName, "created");
         }
+        bookingService.getAllBookings();
 
     } catch (Exception e) {
         System.err.println("Error calling save_or_update_booking function: " + e.getMessage());
