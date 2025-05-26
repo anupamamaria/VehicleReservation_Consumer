@@ -62,30 +62,30 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-//    @Cacheable("allBookings")
+    @Cacheable("allBookings")
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
 
     }
 
-    @Override
-    @Cacheable("recentBookings")
-    public List<Booking> getRecentBookings() {
-        List<Booking> allBookings = bookingRepository.findAll();
-        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
-        return allBookings.stream()
-                .filter(booking -> {
-                    try {
-                        Instant instant = Instant.parse(booking.getTimestamp());
-                        LocalDateTime bookingTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
-                        return bookingTime.isAfter(oneWeekAgo);
-                    } catch (Exception e) {
-                        // log error if needed
-                        return false;
-                    }
-                })
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    @Cacheable("recentBookings")
+//    public List<Booking> getRecentBookings() {
+//        List<Booking> allBookings = bookingRepository.findAll();
+//        LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
+//        return allBookings.stream()
+//                .filter(booking -> {
+//                    try {
+//                        Instant instant = Instant.parse(booking.getTimestamp());
+//                        LocalDateTime bookingTime = LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
+//                        return bookingTime.isAfter(oneWeekAgo);
+//                    } catch (Exception e) {
+//                        // log error if needed
+//                        return false;
+//                    }
+//                })
+//                .collect(Collectors.toList());
+//    }
 
     @Override
     public List<Booking> findBookingsBySourceLocation(int sourceLocationId){
@@ -98,9 +98,9 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-//    @CacheEvict(value = "allBookings", allEntries = true)
+    @CacheEvict(value = "allBookings", allEntries = true)
     public void deleteBookingById(UUID bookingId){
-//        logger.info("Evicting cache: allBookings");
+        logger.info("Evicting cache: allBookings");
         Optional<Booking> optionalBooking = bookingRepository.findByBookingId(bookingId);
         if(optionalBooking.isPresent()){
             Booking booking = optionalBooking.get();
@@ -116,9 +116,9 @@ public class BookingServiceImpl implements BookingService{
     @PersistenceContext
     private EntityManager entityManager;
     @Override
-//    @CacheEvict(value = "allBookings", allEntries = true)
+    @CacheEvict(value = "allBookings", allEntries = true)
     public void processBookingEvent(UUID bookingId, String timestamp, BookingDTO bookingDTO) {
-//        logger.info("Evicting cache: allBookings");
+        logger.info("Evicting cache: allBookings");
         validateBooking(bookingId,bookingDTO);
         String status = "";
         if(bookingRepository.findByBookingId(bookingId).isPresent()){

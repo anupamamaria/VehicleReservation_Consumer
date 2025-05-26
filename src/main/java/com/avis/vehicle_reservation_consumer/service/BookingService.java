@@ -13,6 +13,6 @@ public interface BookingService {
      List<Booking> findBookingsBySourceLocation(int sourceLocationId);
      List<Booking> findBookingsByDestinationLocation(int destinationLocationId);
      void deleteBookingById(UUID bookingId);
-     List<Booking> getRecentBookings();
+//     List<Booking> getRecentBookings();
      void processBookingEvent(UUID bookingId, String timestamp, BookingDTO bookingDTO);
 }
