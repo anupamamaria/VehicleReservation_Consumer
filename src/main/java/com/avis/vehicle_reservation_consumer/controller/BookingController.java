@@ -19,21 +19,39 @@ import java.util.List;
         public BookingController(BookingService bookingService) {
             this.bookingService = bookingService;
         }
-        @GetMapping("/bookings")
-        public ResponseEntity<?> getAllBookings() {
+//        @GetMapping("/bookings")
+//        public ResponseEntity<?> getAllBookings() {
+//            try{
+//                logger.info("Received request to fetch all bookings");
+//                List<Booking> bookings = bookingService.getAllBookings();
+//                if(bookings.isEmpty()){
+//                    logger.warn("No bookings");
+//                    return  ResponseEntity.noContent().build();
+//                }
+//                else{
+//                    logger.info("Returning {} bookings ",bookings.size());
+//                    return ResponseEntity.ok(bookings);
+//                }
+//            } catch(Exception e){
+//                logger.error("Error while fetching bookings",e);
+//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching bookings");
+//            }
+//        }
+        @GetMapping("/recentBookings")
+        public ResponseEntity<?> getRecenetBookings() {
             try{
-                logger.info("Received request to fetch all bookings");
-                List<Booking> bookings = bookingService.getAllBookings();
+                logger.info("Received request to fetch recent bookings");
+                List<Booking> bookings = bookingService.getRecentBookings();
                 if(bookings.isEmpty()){
                     logger.warn("No bookings");
                     return  ResponseEntity.noContent().build();
                 }
                 else{
-                    logger.info("Returning {} bookings ",bookings.size());
+                    logger.info("Returning {} recent bookings ",bookings.size());
                     return ResponseEntity.ok(bookings);
                 }
             } catch(Exception e){
-                logger.error("Error while fetching bookings",e);
+                logger.error("Error while fetching recent bookings",e);
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching bookings");
             }
         }

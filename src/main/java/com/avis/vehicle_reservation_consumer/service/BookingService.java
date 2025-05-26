@@ -9,10 +9,10 @@ import java.util.UUID;
 public interface BookingService {
 //     void saveBooking(UUID bookingId, String timestamp, BookingDTO bookingDTO);
 //     void updateBooking(UUID bookingId, String timestamp, BookingDTO bookingDTO, String eventType);
-     List<Booking> getAllBookings();
+//     List<Booking> getAllBookings();
      List<Booking> findBookingsBySourceLocation(int sourceLocationId);
      List<Booking> findBookingsByDestinationLocation(int destinationLocationId);
      void deleteBookingById(UUID bookingId);
-//     List<Booking> getRecentBookings();
+     List<Booking> getRecentBookings();
      void processBookingEvent(UUID bookingId, String timestamp, BookingDTO bookingDTO);
 }
