@@ -11,8 +11,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BookingDTO {
-
-    // Decrypted fields from BookingRequestDto
     private Integer userId;
     private Integer carId;
     private Integer sourceLocationId;

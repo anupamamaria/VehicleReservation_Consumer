@@ -46,14 +46,14 @@ public class MailServiceImpl implements MailService{
                     .charset("UTF-8")
                     .build();
 
-//            Content htmlContent = Content.builder()
-//                    .data(bodyHtml)
-//                    .charset("UTF-8")
-//                    .build();
+            Content htmlContent = Content.builder()
+                    .data(bodyHtml)
+                    .charset("UTF-8")
+                    .build();
 
             Body body = Body.builder()
                     .text(textContent)
-//                    .html(htmlContent)
+                    .html(htmlContent)
                     .build();
 
             Message message = Message.builder()

@@ -127,7 +127,6 @@ public class BookingServiceImpl implements BookingService{
         }
 
     try {
-        // Use named parameters for better readability and safety
         Query query = entityManager.createNativeQuery(
                 "SELECT save_or_update_booking(:bookingId, :timestamp, :userId, :carId, " +
                         ":sourceLocationId, :destinationLocationId, :startDate, :endDate)"

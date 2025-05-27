@@ -49,10 +49,8 @@ public class BookingKafkaConsumer {
                     log.error("Failed to decrypt payload: {}",e.getMessage(),e);
                     return;
                 }
-
                 BookingDTO bookingDTO = objectMapper.readValue(decryptedJson, BookingDTO.class);
                 bookingService.processBookingEvent(bookingId,timestamp,bookingDTO);
-
             }
         } catch (Exception e) {
             log.error("Unexpected error while consuming booking event: {}", e.getMessage(), e);
