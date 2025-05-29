@@ -8,10 +8,8 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -20,8 +18,6 @@ import java.sql.Date;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -151,7 +147,7 @@ public class BookingServiceImpl implements BookingService{
         String userEmail = user.getEmail();
         // If critical fields changed, send update mail to user
         if (criticalFieldChanged) {
-            logger.info("Critical Fields changed: {}",bookingId);
+            logger.info("Critical Fields changed for bookingId : {}",bookingId);
             mailService.sendMail(userEmail, userName, "updated");
         }
         if(status.toLowerCase().equals("created")){
