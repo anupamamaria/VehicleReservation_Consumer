@@ -28,8 +28,8 @@ public class Booking implements Serializable {
     @Column(name = "timestamp")
     String timestamp;
 
-    @Column(name = "event-type")
-    String eventType;
+//    @Column(name = "event-type")
+//    String eventType;
     @Column(name = "user_id")
     private int userId;
     @Column(name = "car_id")
