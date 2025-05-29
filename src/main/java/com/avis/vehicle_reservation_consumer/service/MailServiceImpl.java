@@ -1,5 +1,7 @@
 package com.avis.vehicle_reservation_consumer.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.ses.SesClient;
@@ -9,6 +11,7 @@ import software.amazon.awssdk.services.ses.model.*;
 public class MailServiceImpl implements MailService{
 
     private final SesClient sesClient;
+    private static final Logger logger = LoggerFactory.getLogger(MailServiceImpl.class);
 
     public MailServiceImpl(SesClient sesClient) {
         this.sesClient = sesClient;
@@ -68,7 +71,7 @@ public class MailServiceImpl implements MailService{
                     .build();
 
             sesClient.sendEmail(emailRequest);
-            System.out.println("Email sent to " + toEmail);
+            logger.info("Email sent to {}",toEmail);
         } catch (SesException e) {
             System.err.println("Failed to send email: " + e.awsErrorDetails().errorMessage());
         }
