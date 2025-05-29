@@ -30,6 +30,8 @@ import java.util.stream.Collectors;
 @Service
 public class BookingServiceImpl implements BookingService{
 
+    @PersistenceContext
+    private EntityManager entityManager;
     private final BookingRepository bookingRepository;
     private final MailService mailService;
     private final RestTemplate restTemplate;
@@ -79,7 +81,6 @@ public class BookingServiceImpl implements BookingService{
                         logger.info("booking time: {}",bookingTime);
                         return bookingTime.isAfter(oneWeekAgo);
                     } catch (Exception e) {
-                        // log error if needed
                         return false;
                     }
                 })
@@ -111,8 +112,6 @@ public class BookingServiceImpl implements BookingService{
         }
     }
 
-    @PersistenceContext
-    private EntityManager entityManager;
     @Override
     @CacheEvict(value = "allBookings", allEntries = true)
     public void processBookingEvent(UUID bookingId, String timestamp, BookingDTO bookingDTO) {
@@ -127,7 +126,6 @@ public class BookingServiceImpl implements BookingService{
         }
 
     try {
-        // Use named parameters for better readability and safety
         Query query = entityManager.createNativeQuery(
                 "SELECT save_or_update_booking(:bookingId, :timestamp, :userId, :carId, " +
                         ":sourceLocationId, :destinationLocationId, :startDate, :endDate)"
@@ -153,7 +151,7 @@ public class BookingServiceImpl implements BookingService{
         String userEmail = user.getEmail();
         // If critical fields changed, send update mail to user
         if (criticalFieldChanged) {
-            System.out.println("Critical Fields changed: " + bookingId);
+            logger.info("Critical Fields changed: {}",bookingId);
             mailService.sendMail(userEmail, userName, "updated");
         }
         if(status.toLowerCase().equals("created")){
@@ -161,7 +159,7 @@ public class BookingServiceImpl implements BookingService{
         }
 
     } catch (Exception e) {
-        System.err.println("Error calling save_or_update_booking function: " + e.getMessage());
+        logger.error("Error calling save_or_update_booking function: {}", e.getMessage());
         e.printStackTrace();
         throw new RuntimeException("Failed to process booking event: " + e.getMessage(), e);
     }

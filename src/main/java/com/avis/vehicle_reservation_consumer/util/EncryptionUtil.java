@@ -6,6 +6,7 @@ import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
 public class EncryptionUtil {
+    //to decrypt the encrypted payload
 
     public static SecretKey getSharedSecretKey() {
         String base64Key = "sBvE9h1C+Jf9eWzL3EzTxg==";
