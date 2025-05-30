@@ -7,10 +7,9 @@ import java.util.List;
 import java.util.UUID;
 
 public interface BookingService {
-//     List<Booking> getAllBookings();
      List<Booking> findBookingsBySourceLocation(int sourceLocationId);
      List<Booking> findBookingsByDestinationLocation(int destinationLocationId);
      void deleteBookingById(UUID bookingId);
-     List<Booking> getRecentBookings();
+     List<Booking> getRecentBookings(int userId);
      void processBookingEvent(UUID bookingId, String timestamp, BookingDTO bookingDTO);
 }

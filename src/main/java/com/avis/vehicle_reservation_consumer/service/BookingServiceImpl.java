@@ -57,17 +57,10 @@ public class BookingServiceImpl implements BookingService{
         }
     }
 
-//    @Override
-//    @Cacheable("allBookings")
-//    public List<Booking> getAllBookings() {
-//        return bookingRepository.findAll();
-//
-//    }
-
     @Override
-    @Cacheable("allBookings")
-    public List<Booking> getRecentBookings() {
-        List<Booking> allBookings = bookingRepository.findAll();
+    @Cacheable(cacheNames = "allBookings", key="#userId")
+    public List<Booking> getRecentBookings(int userId) {
+        List<Booking> allBookings = bookingRepository.findByUserId(userId);
         LocalDateTime oneWeekAgo = LocalDateTime.now().minusWeeks(1);
         return allBookings.stream()
                 .filter(booking -> {
@@ -150,6 +143,7 @@ public class BookingServiceImpl implements BookingService{
             logger.info("Critical Fields changed for bookingId : {}",bookingId);
             mailService.sendMail(userEmail, userName, "updated");
         }
+        // If new booking is created, send create mail to user
         if(status.toLowerCase().equals("created")){
             mailService.sendMail(userEmail, userName, "created");
         }
@@ -160,5 +154,4 @@ public class BookingServiceImpl implements BookingService{
         throw new RuntimeException("Failed to process booking event: " + e.getMessage(), e);
     }
 }
-
 }
