@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.ses.SesClient;
 import software.amazon.awssdk.services.ses.model.*;
 
+import java.util.UUID;
+
 @Service
 public class MailServiceImpl implements MailService{
     //to send notification email for create and update bookings
@@ -22,7 +24,7 @@ public class MailServiceImpl implements MailService{
     private String fromEmail;
 
     @Override
-    public void sendMail(String toEmail, String userName, String status){
+    public void sendMail(String toEmail, String userName, String status, UUID bookingId){
         String subject;
         String bodyText;
         String bodyHtml;
@@ -31,12 +33,13 @@ public class MailServiceImpl implements MailService{
             subject = "Booking Updated";
             bodyText = "Hi " + userName + ",\nYour booking has been successfully updated.";
             bodyHtml = "<p>Hi <strong>" + userName + "</strong>,</p>" +
-                    "<p>Your booking has been <strong>successfully updated</strong>.</p>";
+                    "<p>Your booking with ID <strong>"+bookingId +"</strong> has been <strong>successfully updated</strong>.</p>";
         } else {
             subject = "Booking Created";
             bodyText = "Hi " + userName + ",\nYour booking has been successfully created.";
             bodyHtml = "<p>Hi <strong>" + userName + "</strong>,</p>" +
-                    "<p>Your booking has been <strong>successfully created</strong>.</p>";
+                    "<p>Your booking has been <strong>successfully created</strong>. " +
+                    "Your booking ID is <strong>" + bookingId + "</strong>.</p>";
         }
 
         try {
