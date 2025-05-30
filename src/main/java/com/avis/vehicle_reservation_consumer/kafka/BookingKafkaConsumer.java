@@ -37,7 +37,6 @@ public class BookingKafkaConsumer {
             if(eventType.toLowerCase().equals("deleted")){
                 bookingService.deleteBookingById(bookingId);
             }
-
             else{
                 String encryptedPayload = message.getEncryptedPayload().toString();
                 // Decrypt payload
@@ -52,14 +51,13 @@ public class BookingKafkaConsumer {
 
                 BookingDTO bookingDTO = objectMapper.readValue(decryptedJson, BookingDTO.class);
                 bookingService.processBookingEvent(bookingId,timestamp,bookingDTO);
-
             }
         } catch (Exception e) {
             log.error("Unexpected error while consuming booking event: {}", e.getMessage(), e);
         }
     }
-    @PostConstruct
-    public void init(){
-        System.out.println("Booking consumer is ready");
-    }
+//    @PostConstruct
+//    public void init(){
+//        System.out.println("Booking consumer is ready");
+//    }
 }

@@ -37,11 +37,11 @@ import java.util.List;
 //                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching bookings");
 //            }
 //        }
-        @GetMapping("/recentBookings")
-        public ResponseEntity<?> getRecenetBookings() {
+        @GetMapping("/recentBookings/{userId}")
+        public ResponseEntity<?> getRecentBookings(@PathVariable int userId) {
             try{
-                logger.info("Received request to fetch recent bookings");
-                List<Booking> bookings = bookingService.getRecentBookings();
+                logger.info("Received request to fetch recent bookings for userId: {}",userId);
+                List<Booking> bookings = bookingService.getRecentBookings(userId);
                 if(bookings.isEmpty()){
                     logger.warn("No bookings");
                     return  ResponseEntity.noContent().build();

@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.RedisPassword;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
-import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 
 @Configuration
@@ -21,20 +20,5 @@ public class RedisConfig {
         config.setPassword(RedisPassword.of("jIqqoBtWankjEVNzc811dKGxcpckCWgr"));
         return new LettuceConnectionFactory(config);
     }
-
-//    @Bean
-//    public RedisConnectionFactory redisConnectionFactory() {
-//        RedisStandaloneConfiguration redisConfig = new RedisStandaloneConfiguration();
-//        redisConfig.setHostName("redis-10270.crce199.us-west-2-2.ec2.redns.redis-cloud.com");
-//        redisConfig.setPort(10270);
-//        redisConfig.setPassword(RedisPassword.of("jIqqoBtWankjEVNzc811dKGxcpckCWgr"));
-//
-//        LettuceClientConfiguration clientConfig = LettuceClientConfiguration.builder()
-//                .useSsl() // <== This is the correct way to enable SSL
-//                .build();
-//
-//        return new LettuceConnectionFactory(redisConfig, clientConfig);
-//    }
-
 }
 
