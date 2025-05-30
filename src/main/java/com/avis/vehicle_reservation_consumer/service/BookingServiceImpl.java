@@ -141,11 +141,11 @@ public class BookingServiceImpl implements BookingService{
         // If critical fields changed, send update mail to user
         if (criticalFieldChanged) {
             logger.info("Critical Fields changed for bookingId : {}",bookingId);
-            mailService.sendMail(userEmail, userName, "updated");
+            mailService.sendMail(userEmail, userName, "updated",bookingId);
         }
         // If new booking is created, send create mail to user
         if(status.toLowerCase().equals("created")){
-            mailService.sendMail(userEmail, userName, "created");
+            mailService.sendMail(userEmail, userName, "created", bookingId);
         }
 
     } catch (Exception e) {
