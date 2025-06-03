@@ -106,20 +106,12 @@ public class BookingServiceImpl implements BookingService{
     public void processBookingEvent(UUID bookingId, String timestamp, BookingDTO bookingDTO) {
         logger.info("Evicting cache: allBookings");
         validateBooking(bookingId,bookingDTO);
-        String status = "";
-        if(bookingRepository.findByBookingId(bookingId).isPresent()){
-            status = "updated";
-        }
-        else{
-            status = "created";
-        }
-
+        String status = bookingRepository.findByBookingId(bookingId).isPresent() ? "updated" : "created";
     try {
         Query query = entityManager.createNativeQuery(
                 "SELECT save_or_update_booking(:bookingId, :timestamp, :userId, :carId, " +
                         ":sourceLocationId, :destinationLocationId, :startDate, :endDate)"
         );
-
         query.setParameter("bookingId", bookingId);
         query.setParameter("timestamp", timestamp);
         query.setParameter("userId", bookingDTO.getUserId());
