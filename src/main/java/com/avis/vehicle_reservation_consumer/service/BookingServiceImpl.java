@@ -108,20 +108,15 @@ public class BookingServiceImpl implements BookingService{
         validateBooking(bookingId,bookingDTO);
         String status = bookingRepository.findByBookingId(bookingId).isPresent() ? "updated" : "created";
     try {
-        Query query = entityManager.createNativeQuery(
-                "SELECT save_or_update_booking(:bookingId, :timestamp, :userId, :carId, " +
-                        ":sourceLocationId, :destinationLocationId, :startDate, :endDate)"
-        );
-        query.setParameter("bookingId", bookingId);
-        query.setParameter("timestamp", timestamp);
-        query.setParameter("userId", bookingDTO.getUserId());
-        query.setParameter("carId", bookingDTO.getCarId());
-        query.setParameter("sourceLocationId", bookingDTO.getSourceLocationId());
-        query.setParameter("destinationLocationId", bookingDTO.getDestinationLocationId());
-        query.setParameter("startDate", Date.valueOf(bookingDTO.getStartDate()));
-        query.setParameter("endDate", Date.valueOf(bookingDTO.getEndDate()));
-
-        Boolean criticalFieldChanged = (Boolean) query.getSingleResult();
+        Boolean criticalFieldChanged = bookingRepository.callSaveOrUpdateBooking(
+                bookingId,
+                timestamp,
+                bookingDTO.getUserId(),
+                bookingDTO.getCarId(),
+                bookingDTO.getSourceLocationId(),
+                bookingDTO.getDestinationLocationId(),
+                bookingDTO.getStartDate(),
+                bookingDTO.getEndDate());
         logger.info("Critical Field Changed : {} ",criticalFieldChanged);
 
         int userId = bookingDTO.getUserId();
