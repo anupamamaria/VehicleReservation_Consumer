@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
@@ -55,29 +56,29 @@ import java.util.List;
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching bookings");
             }
         }
-        @GetMapping("/bookings/source/{sourceLocationId}")
-        public ResponseEntity<?> getBookingsBySourceLocation(@PathVariable int sourceLocationId){
+        @GetMapping("/bookings/source")
+        public ResponseEntity<?> getBookingsBySourceLocation(@RequestParam int sourceLocationId, @RequestParam int userId){
             try{
-                logger.info("Received request to fetch bookings from source location: "+sourceLocationId);
-                List<Booking> bookings = bookingService.findBookingsBySourceLocation(sourceLocationId);
+                logger.info("Received request to fetch bookings from source location: {} for userId: {}",sourceLocationId,userId);
+                List<Booking> bookings = bookingService.findBookingsBySourceLocationAndUserId(sourceLocationId, userId);
                 if(bookings.isEmpty()){
                     logger.warn("No bookings from this source location");
                     return ResponseEntity.noContent().build();
                 }
                 else{
-                    logger.info("Returning {} bookings from source location: {} ",bookings.size(),sourceLocationId);
+                    logger.info("Returning {} bookings from source location: {} for userId: {}",bookings.size(),sourceLocationId,userId);
                     return ResponseEntity.ok(bookings);
                 }
             }catch(Exception e){
                 logger.error("Error while fetching bookings by source location",e);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured while fetching bookings by source location");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching bookings by source location");
             }
         }
-        @GetMapping("/bookings/destination/{destinationLocationId}")
-        public ResponseEntity<?> getBookingsByDestinationLocation(@PathVariable int destinationLocationId){
+        @GetMapping("/bookings/destination")
+        public ResponseEntity<?> getBookingsByDestinationLocation(@RequestParam int destinationLocationId, @RequestParam int userId){
             try{
-                logger.info("Received request to fetch bookings to destination location: "+destinationLocationId);
-                List<Booking> bookings = bookingService.findBookingsByDestinationLocation(destinationLocationId);
+                logger.info("Received request to fetch bookings to destination location: {} for userId: {}",destinationLocationId, userId);
+                List<Booking> bookings = bookingService.findBookingsByDestinationLocationAndUserId(destinationLocationId, userId);
                 if(bookings.isEmpty()){
                     logger.warn("No bookings to this destination location");
                     return ResponseEntity.noContent().build();
@@ -88,7 +89,8 @@ import java.util.List;
                 }
             }catch(Exception e){
                 logger.error("Error while fetching bookings by destination location",e);
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occured while fetching bookings by destination location");
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An error occurred while fetching bookings by destination location");
+
             }
         }
     }

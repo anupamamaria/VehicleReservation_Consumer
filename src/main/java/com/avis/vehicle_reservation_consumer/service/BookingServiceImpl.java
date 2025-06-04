@@ -26,8 +26,6 @@ import java.util.stream.Collectors;
 @Service
 public class BookingServiceImpl implements BookingService{
 
-    @PersistenceContext
-    private EntityManager entityManager;
     private final BookingRepository bookingRepository;
     private final MailService mailService;
     private final RestTemplate restTemplate;
@@ -77,13 +75,13 @@ public class BookingServiceImpl implements BookingService{
     }
 
     @Override
-    public List<Booking> findBookingsBySourceLocation(int sourceLocationId){
-        return bookingRepository.findBySourceLocationId(sourceLocationId);
+    public List<Booking> findBookingsBySourceLocationAndUserId(int sourceLocationId,int userId){
+        return bookingRepository.findBySourceLocationIdAndUserId(sourceLocationId, userId);
     }
 
     @Override
-    public List<Booking> findBookingsByDestinationLocation(int destinationLocationId){
-        return bookingRepository.findByDestinationLocationId(destinationLocationId);
+    public List<Booking> findBookingsByDestinationLocationAndUserId(int destinationLocationId, int userId){
+        return bookingRepository.findByDestinationLocationIdAndUserId(destinationLocationId, userId);
     }
 
     @Override
