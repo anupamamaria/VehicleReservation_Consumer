@@ -16,8 +16,8 @@ import java.util.UUID;
 public interface BookingRepository extends JpaRepository<Booking,Integer> {
 Optional<Booking> findByBookingId(UUID bookingId);
 List<Booking> findByUserId(int userId);
-List<Booking> findBySourceLocationId(int sourceLocationId);
-List<Booking> findByDestinationLocationId(int destinationLocationId);
+List<Booking> findBySourceLocationIdAndUserId(int sourceLocationId, int userId);
+List<Booking> findByDestinationLocationIdAndUserId(int destinationLocationId, int userId);
     @Query(value = "SELECT save_or_update_booking(:bookingId, :timestamp, :userId, :carId," +
             " :sourceLocationId, :destinationLocationId, :startDate, :endDate)", nativeQuery = true)
     Boolean callSaveOrUpdateBooking(@Param("bookingId") UUID bookingId,
